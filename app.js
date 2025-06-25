@@ -13,13 +13,22 @@ function fetchWeatherByCity(city) {
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       return res.json();
     })
-    .then(data => console.log('Weather by city:', data))
-    .catch(err => console.error('City fetch error:', err));
+    .then(data => {
+      console.log('Weather by city:', data)
+      setWeatherIcon(data.weather[0].main, data.name);
+    })
+    .catch(err => {
+      alert('Böyle bir şehir bulunamadı. Lütfen başka bir şehir adı girin.');
+    });
 }
 
 form.addEventListener("submit",(event) => {
   event.preventDefault();
-  const city = input.value;
+  const city = input.value.trim();
+  if (!city) {
+    alert("Lütfen bir şehir adı girin.");
+    return;
+  }
   fetchWeatherByCity(city);
 })
 
@@ -30,7 +39,10 @@ function fetchWeatherByCoords(lat, lon) {
             if (!res.ok) throw new Error('Konumdan hava durumu alınamadı!');
             return res.json();
         })
-        .then(data => console.log('Weather by city:', data))
+        .then(data => {
+            console.log('Weather by city:', data)
+            setWeatherIcon(data.weather[0].main, data.name);
+        })
         .catch(() =>  console.error('City fetch error:', err));
 }
 
@@ -41,7 +53,35 @@ locationButton.addEventListener('click', function() {
             const { latitude, longitude } = pos.coords;
             fetchWeatherByCoords(latitude, longitude);
         },
+        (err) => {
+            alert("Konum izni verilmedi veya konum alınamadı. Lütfen tarayıcı ayarlarından izin verin.");
+            console.error('Konum hatası');
+        }
     );
-}); 
+});
+
+function setWeatherIcon(weatherMain, cityName) {
+  var iconDiv = document.getElementById("weather-icon");
+  var iconEmoji = "";
+
+  if (weatherMain === "Clear") {
+    iconEmoji = "☀️";
+  } else if (weatherMain === "Clouds") {
+    iconEmoji = "☁️";
+  } else if (weatherMain === "Rain") {
+    iconEmoji = "🌧️";
+  } else if (weatherMain === "Thunderstorm") {
+    iconEmoji = "⛈️";
+  } else if (weatherMain === "Snow") {
+    iconEmoji = "❄️";
+  } else if ( weatherMain === "Fog" ) {
+    iconEmoji = "🌫️";
+  } else {
+    iconEmoji = "🌈"; 
+  }
+
+  iconDiv.innerHTML = iconEmoji + "<div style='font-size:18px; margin-top:6px;'>" + cityName + "</div>";
+}
+
 
 
