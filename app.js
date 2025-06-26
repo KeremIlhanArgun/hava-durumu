@@ -4,6 +4,23 @@ const locationButton = document.getElementById('location-button');
 const form = document.getElementById("form")
 const apiKey = '1943608005c748d2adc73184ff869b73';
 const baseUrl ='https://api.openweathermap.org/data/2.5/weather'
+const errorMessage = document.getElementById('error-message')
+const iconDiv = document.getElementById("weather-icon");
+let iconEmoji = "";
+const wrapper = document.querySelector('.page-wrapper');
+const tempDiv = document.getElementById("weather-temp");
+
+
+
+function reset(message){
+  wrapper.classList.remove('sunny', 'rainy', 'cloudy', 'snowy', 'stormy');
+  iconDiv.innerHTML =''
+  iconEmoji=''
+  tempDiv.innerHTML=''
+  errorMessage.innerHTML=message
+
+  
+}
 
 function fetchWeatherByCity(city) {
   fetch(
@@ -18,12 +35,11 @@ function fetchWeatherByCity(city) {
       setWeatherIcon(data.weather[0].main, data.name);
       setWeatherC(data);
       applyWeatherEffect(data.weather[0].main);
-
-
-
+      errorMessage.innerHTML=''
     })
     .catch(err => {
-      alert('Böyle bir şehir bulunamadı. Lütfen başka bir şehir adı girin.');
+      errorMessage.innerHTML ='Böyle bir şehir bulunamadı. Lütfen başka bir şehir adı girin.';
+      reset('Böyle bir şehir bulunamadı. Lütfen başka bir şehir adı girin.');
     });
 }
 
@@ -31,7 +47,7 @@ form.addEventListener("submit",(event) => {
   event.preventDefault();
   const city = input.value.trim();
   if (!city) {
-    alert("Lütfen bir şehir adı girin.");
+    errorMessage.innerHTML ='Lütfen bir şehir adı girin.';
     return;
   }
   fetchWeatherByCity(city);
@@ -64,7 +80,7 @@ locationButton.addEventListener('click', function() {
             fetchWeatherByCoords(latitude, longitude);
         },
         (err) => {
-            alert("Konum izni verilmedi veya konum alınamadı. Lütfen tarayıcı ayarlarından izin verin.");
+              errorMessage.innerHTML ='Konum izni verilmedi veya konum alınamadı. Lütfen tarayıcı ayarlarından izin verin.';
             console.error('Konum hatası');
             
         }
@@ -72,8 +88,6 @@ locationButton.addEventListener('click', function() {
 });
 
 function setWeatherIcon(weatherMain, cityName) {
-  var iconDiv = document.getElementById("weather-icon");
-  var iconEmoji = "";
 
   if (weatherMain === "Clear") {
     iconEmoji = "☀️";
@@ -97,13 +111,11 @@ function setWeatherIcon(weatherMain, cityName) {
 
 function setWeatherC(data) {
   const temp = data.main.temp;                         
-  const tempDiv = document.getElementById("weather-temp");
   tempDiv.textContent = `${temp.toFixed(1)}°C`;        
 }
 
 
 function applyWeatherEffect(weatherMain) {
-  const wrapper = document.querySelector('.page-wrapper');
   wrapper.classList.remove('sunny', 'rainy', 'cloudy', 'snowy', 'stormy');
 
   if (weatherMain === 'Clear') {
@@ -118,3 +130,4 @@ function applyWeatherEffect(weatherMain) {
     wrapper.classList.add('stormy');
   }
 }
+

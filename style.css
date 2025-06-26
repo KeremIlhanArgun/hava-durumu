@@ -124,3 +124,12 @@ background-image: url('./rainy-background.png');
 .page-wrapper.stormy {
   background-image: url('./rainy-background.png');
 }
+
+#error-message {
+  font-size: 14;
+  text-align: left;
+  margin-top: 10px;
+  color: rgb(245, 16, 16); 
+  font-weight: bold;
+
+}
