@@ -25,6 +25,7 @@ body {
     flex-direction: column;
   background-color: rgba(68, 68, 68, 0.46);
   padding: 20px;
+  margin: 20px;
    width: 100%;
   max-width: 400px;
   box-sizing: border-box;
