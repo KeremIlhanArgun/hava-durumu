@@ -16,6 +16,11 @@ function fetchWeatherByCity(city) {
     .then(data => {
       console.log('Weather by city:', data)
       setWeatherIcon(data.weather[0].main, data.name);
+      setWeatherC(data);
+      applyWeatherEffect(data.weather[0].main);
+
+
+
     })
     .catch(err => {
       alert('Böyle bir şehir bulunamadı. Lütfen başka bir şehir adı girin.');
@@ -30,6 +35,7 @@ form.addEventListener("submit",(event) => {
     return;
   }
   fetchWeatherByCity(city);
+  
 })
 
 
@@ -42,6 +48,10 @@ function fetchWeatherByCoords(lat, lon) {
         .then(data => {
             console.log('Weather by city:', data)
             setWeatherIcon(data.weather[0].main, data.name);
+            setWeatherC(data); 
+            applyWeatherEffect(data.weather[0].main);
+
+
         })
         .catch(() =>  console.error('City fetch error:', err));
 }
@@ -56,6 +66,7 @@ locationButton.addEventListener('click', function() {
         (err) => {
             alert("Konum izni verilmedi veya konum alınamadı. Lütfen tarayıcı ayarlarından izin verin.");
             console.error('Konum hatası');
+            
         }
     );
 });
@@ -84,4 +95,26 @@ function setWeatherIcon(weatherMain, cityName) {
 }
 
 
+function setWeatherC(data) {
+  const temp = data.main.temp;                         
+  const tempDiv = document.getElementById("weather-temp");
+  tempDiv.textContent = `${temp.toFixed(1)}°C`;        
+}
 
+
+function applyWeatherEffect(weatherMain) {
+  const wrapper = document.querySelector('.page-wrapper');
+  wrapper.classList.remove('sunny', 'rainy', 'cloudy', 'snowy', 'stormy');
+
+  if (weatherMain === 'Clear') {
+    wrapper.classList.add('sunny');
+  } else if (weatherMain === 'Rain') {
+    wrapper.classList.add('rainy');
+  } else if (weatherMain === 'Clouds') {
+    wrapper.classList.add('cloudy');
+  } else if (weatherMain === 'Snow') {
+    wrapper.classList.add('snowy');
+  } else if (weatherMain === 'Thunderstorm') {
+    wrapper.classList.add('stormy');
+  }
+}
